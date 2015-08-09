@@ -1,0 +1,15 @@
+packages: []
+repositories: []
+repository_keys: []
+keyserver: 'pgp.mit.edu'
+package_state: 'present'
+modules: []
+blacklist_modules: []
+services: []
+volume_groups: []
+filesystems: []
+users: []
+package_upgrade: safe
+sysctls: []
+ufw_policies: []
+ufw_rules: []

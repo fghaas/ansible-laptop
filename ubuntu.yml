@@ -1,0 +1,4 @@
+- hosts: ubuntu
+  sudo: yes
+  roles:
+    - ubuntu.common

@@ -1,0 +1,151 @@
+---
+- name: create volume groups
+  lvg:
+    vg: "{{ item.name }}"
+    state: "{{ item.state | default('present') }}"
+    force: "{{ item.force | default(false) }}"
+    pvs: "{{ item.pvs }}"
+  with_items: volume_groups
+  tags:
+    - install
+
+- name: create logical volumes
+  lvol:
+    vg: "{{ item.0.name }}"
+    lv: "{{ item.1.name }}"
+    state: "{{ item.1.state | default('present') }}"
+    force: "{{ item.1.force | default(false) }}"
+    size: "{{ item.1.size }}"
+  with_subelements:
+    - volume_groups
+    - volumes
+  tags:
+    - install
+
+- name: create filesystems
+  filesystem:
+    dev: "{{ item.dev }}"
+    fstype: "{{ item.fstype }}"
+    force: "{{ item.force | default(false) }}"
+  with_items: filesystems
+  tags:
+    - install
+
+- name: set filesystem mount points
+  mount:
+    name: "{{ item.name }}"
+    src: "{{ item.dev }}"
+    fstype: "{{ item.fstype }}"
+    state: "{{ item.state | default('mounted') }}"
+  with_items: filesystems
+  tags:
+    - install
+    - config
+
+ 
+- name: configure repository keys
+  apt_key:
+    id: "{{ item.id }}"
+    state: "{{ item.state | default('present') }}"
+    keyserver: "{{ item.keyserver | default(keyserver) }}"
+  with_items: repository_keys
+  tags:
+    - install
+    - config    
+
+- name: configure repositories
+  apt_repository:
+    repo: "{{ item.repo }}"
+    state: "{{ item.state | default('present') }}"
+    update_cache: no
+  with_items: repositories
+  tags:
+    - install
+    - config
+    - upgrade
+
+- name: update package cache
+  apt:
+    update_cache: yes
+  tags:
+    - install
+    - upgrade
+
+- name: install packages
+  apt:
+    name: "{{ item.name }}"
+    state: "{{ item.state | default(package_state) }}"
+    install_recommends: false
+  with_items: packages
+  tags: install
+
+- name: "upgrade packages"
+  apt:
+    upgrade: "{{ package_upgrade }}"
+  tags: upgrade
+
+- name: configure users
+  user:
+    name: "{{ item.name }}"
+    uid: "{{ item.uid | default(omit) }}"
+    shell: "{{ item.shell | default(omit) }}"
+    comment: "{{ item.comment | default(omit) }}"
+    group: "{{ item.group | default(omit) }}"
+    groups: "{{ item.groups | default(omit) }}"
+  with_items: users
+  tags:
+    - user
+
+- name: blacklist kernel modules
+  kernel_blacklist:
+    name: "{{ item.name }}"
+    state: "{{ item.state | default('present') }}"
+  with_items: blacklist_modules
+  tags: config
+
+- name: load kernel modules
+  modprobe:
+    name: "{{ item.name }}"
+    state: "{{ item.state | default('present') }}"
+    params: "{{ item.params | default('') }}"
+  with_items: modules
+  tags: config
+
+- name: configure sysctl entries
+  sysctl:
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    state: "{{ item.state | default('present') }}"
+    sysctl_file: "{{ item.file | default(true) }}"
+  with_items: sysctls
+  tags: config
+
+- name: configure services
+  service:
+    name: "{{ item.name }}"
+    state: "{{ item.state | default(omit) }}"
+    enabled: "{{ item.enabled | default(true) }}"
+  with_items: services
+  tags: config
+
+- name: configure UFW policies
+  ufw:
+    direction: "{{ item.direction }}"
+    policy: "{{ item.policy }}"
+    state: "{{ item.state | default('enabled') }}"
+  with_items: ufw_policies
+  tags: config
+
+- name: configure UFW rules
+  ufw:
+    name: "{{ item.name | default(omit) }}"
+    direction: "{{ item.direction | default(omit) }}"
+    from_ip: "{{ item.from_ip | default(omit) }}"
+    from_port: "{{ item.from_port | default(omit) }}"
+    to_ip: "{{ item.to_ip | default(omit) }}"
+    to_port: "{{ item.to_port | default(omit) }}"
+    proto: "{{ item.proto | default(omit) }}"
+    rule: "{{ item.rule | default(omit) }}"
+    state: "{{ item.state | default('enabled') }}"
+  with_items: ufw_rules
+  tags: config
