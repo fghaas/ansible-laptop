@@ -64,6 +64,13 @@
     - config
     - upgrade
 
+- name: configure apt proxy
+  template: >-
+    dest="/etc/apt/apt.conf.d/50proxy"
+    src="apt-proxy.j2"
+  when: apt_proxy is defined
+  tags: config
+
 - name: update package cache
   apt:
     update_cache: yes
@@ -92,6 +99,7 @@
     comment: "{{ item.comment | default(omit) }}"
     group: "{{ item.group | default(omit) }}"
     groups: "{{ item.groups | default(omit) }}"
+    state: "{{ item.state | default(omit) }}"
   with_items: users
   tags:
     - user
