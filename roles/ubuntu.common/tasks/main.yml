@@ -37,7 +37,19 @@
   tags:
     - install
 
-- name: set filesystem mount points
+- name: create/remove filesystem mount points
+  file:
+    state: "{{ absent if item.state | default('mounted') == 'absent' else 'directory' }}"
+    owner: root
+    group: root
+    name: "{{ item.name }}"
+  with_items: "{{ filesystems }}"
+  become: true
+  become_user: root
+  tags:
+    - install
+
+- name: mount filesystems
   mount:
     name: "{{ item.name }}"
     src: "{{ item.dev }}"
