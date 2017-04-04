@@ -1,0 +1,22 @@
+---
+- name: install python-pip
+  apt:
+    name: "{{ item }}"
+    state: "{{ package_state }}"
+  with_items:
+    - python-pip
+    - python3-pip
+  become: true
+  become_user: root
+  tags: install
+
+- name: install pip packages
+  pip:
+    name: "{{ item.name }}"
+    version: "{{ item.version|default(omit) }}"
+    state: "{{ item.state | default(package_state) }}"
+    executable: "{{ item.executable|default(omit) }}"
+  with_items: "{{ pip_packages }}"
+  become: true
+  become_user: root
+  tags: install

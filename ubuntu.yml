@@ -17,3 +17,8 @@
   roles:
     - role: ubuntu.nodejs
       tags: nodejs
+
+- hosts: "&ubuntu:python"
+  roles:
+    - role: ubuntu.python
+      tags: python
