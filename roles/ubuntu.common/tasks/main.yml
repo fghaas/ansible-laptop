@@ -91,18 +91,20 @@
   become_user: root
   tags:
     - install
-    - config    
+    - config
 
-- name: configure repositories
-  apt_repository:
-    repo: "{{ item.repo }}"
+- name: fetch repository keys from URLs
+  apt_key:
+    id: "{{ item.id | default(omit) }}"
     state: "{{ item.state | default('present') }}"
-    update_cache: no
-  with_items: repositories
+    url: "{{ item.url }}"
+  with_items: "{{ repository_keys }}"
+  when: item.url is defined
+  become: true
+  become_user: root
   tags:
     - install
     - config
-    - upgrade
 
 - name: configure apt proxy
   template: >-
@@ -112,6 +114,19 @@
   become: true
   become_user: root
   tags: config
+
+- name: configure repositories
+  apt_repository:
+    repo: "{{ item.repo }}"
+    state: "{{ item.state | default('present') }}"
+    update_cache: no
+  with_items: "{{ repositories }}"
+  become: true
+  become_user: root
+  tags:
+    - install
+    - config
+    - upgrade
 
 - name: update package cache
   apt:
