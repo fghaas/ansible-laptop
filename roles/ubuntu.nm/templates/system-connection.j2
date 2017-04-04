@@ -1,0 +1,13 @@
+[connection]
+id={{ item.key }}
+{% for conn_option_key, conn_option_value in item.value.connection.iteritems() %}
+{{ conn_option_key }}={{ conn_option_value }}
+{% endfor %}
+
+{% for section, options in item.value.iteritems() if section != 'connection' %}
+[{{ section }}]
+{% for option_key, option_value in options.iteritems() %}
+{{ option_key }}={{ option_value }}
+{% endfor %}
+
+{% endfor %}

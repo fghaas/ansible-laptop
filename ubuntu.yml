@@ -7,3 +7,9 @@
   roles:
     - role: ubuntu.lxc
       tags: lxc
+
+- hosts: "&ubuntu:nm"
+  roles:
+    - role: ubuntu.nm
+      tags: nm
+
