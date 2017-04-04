@@ -1,0 +1,67 @@
+---
+  - name: ensure required packages are installed
+    apt:
+      name: "{{ item }}"
+      state: installed
+    become: true
+    become_user: root
+    with_items:
+      - lxc
+      - uidmap
+      - squashfs-tools
+      - libpam-cgfs
+    tags: install
+
+  - name: create LXC containers from templates 
+    lxc_container:
+      name: "{{ item.name }}"
+      container_config: "{{ item.container_config | default(omit) }}"
+      template: "{{ item.template | default(omit) }}"
+      template_options: "{{ item.template_options | default(omit) }}"
+      backing_store: "{{ item.backing_store | default(omit) }}"
+      state: "{{ item.state | default(omit) }}"
+    with_items: "{{ lxc_containers }}"
+    become: "{{ item.privileged | default(false) }}"
+    become_user: "{{ 'root' if item.privileged | default(false) else omit }}"
+    when: >
+      item.clone_source is not defined
+      and item.state|default('started') != 'absent'
+    tags: install
+
+  - name: create LXC containers from clones
+    lxc_container:
+      name: "{{ item.clone_source }}"
+      container_config: "{{ item.container_config | default(omit) }}"
+      clone_name: "{{ item.name }}"
+      backing_store: "{{ item.backing_store | default(omit) }}"
+      clone_snapshot: "{{ item.clone_snapshot | default(omit) }}"
+      state: "{{ item.state | default(omit) }}"
+    with_items: "{{ lxc_containers }}"
+    become: "{{ item.privileged | default(false) }}"
+    become_user: "{{ 'root' if item.privileged | default(false) else omit }}"
+    when: >
+      item.clone_source is defined
+      and item.state|default('started') != 'absent'
+    tags: install
+
+  - name: configure LXC containers created from clones
+    lxc_container:
+      name: "{{ item.name }}"
+      container_config: "{{ item.container_config | default(omit) }}"
+      state: "{{ item.state | default(omit) }}"
+    with_items: "{{ lxc_containers }}"
+    become: "{{ item.privileged | default(false) }}"
+    become_user: "{{ 'root' if item.privileged | default(false) else omit }}"
+    when: item.clone_source is defined
+    tags: config
+
+  - name: configure LXC containers created from templates
+    lxc_container:
+      name: "{{ item.name }}"
+      container_config: "{{ item.container_config | default(omit) }}"
+      state: "{{ item.state | default(omit) }}"
+    with_items: "{{ lxc_containers }}"
+    become: "{{ item.privileged | default(false) }}"
+    become_user: "{{ 'root' if item.privileged | default(false) else omit }}"
+    when: item.clone_source is not defined
+    tags: config

@@ -2,3 +2,8 @@
   sudo: yes
   roles:
     - ubuntu.common
+
+- hosts: "&ubuntu:lxc"
+  roles:
+    - role: ubuntu.lxc
+      tags: lxc
