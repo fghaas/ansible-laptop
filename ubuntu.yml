@@ -2,6 +2,8 @@
   roles:
     - role: ubuntu.common
       tags: common
+    - role: ubuntu.pam
+      tags: pam
 
 - hosts: "&ubuntu:lxc"
   roles:
