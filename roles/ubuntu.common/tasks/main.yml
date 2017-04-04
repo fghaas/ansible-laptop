@@ -5,7 +5,9 @@
     state: "{{ item.state | default('present') }}"
     force: "{{ item.force | default(false) }}"
     pvs: "{{ item.pvs }}"
-  with_items: volume_groups
+  with_items: "{{ volume_groups }}"
+  become: true
+  become_user: root
   tags:
     - install
 
@@ -17,8 +19,10 @@
     force: "{{ item.1.force | default(false) }}"
     size: "{{ item.1.size }}"
   with_subelements:
-    - volume_groups
+    - "{{ volume_groups }}"
     - volumes
+  become: true
+  become_user: root
   tags:
     - install
 
@@ -27,7 +31,9 @@
     dev: "{{ item.dev }}"
     fstype: "{{ item.fstype }}"
     force: "{{ item.force | default(false) }}"
-  with_items: filesystems
+  with_items: "{{ filesystems }}"
+  become: true
+  become_user: root
   tags:
     - install
 
@@ -37,7 +43,10 @@
     src: "{{ item.dev }}"
     fstype: "{{ item.fstype }}"
     state: "{{ item.state | default('mounted') }}"
-  with_items: filesystems
+    opts: "{{ item.opts | default(omit) }}"
+  with_items: "{{ filesystems }}"
+  become: true
+  become_user: root
   tags:
     - install
     - config
@@ -48,7 +57,10 @@
     id: "{{ item.id }}"
     state: "{{ item.state | default('present') }}"
     keyserver: "{{ item.keyserver | default(keyserver) }}"
-  with_items: repository_keys
+  with_items: "{{ repository_keys }}"
+  when: item.url is not defined
+  become: true
+  become_user: root
   tags:
     - install
     - config    
@@ -69,11 +81,15 @@
     dest="/etc/apt/apt.conf.d/50proxy"
     src="apt-proxy.j2"
   when: apt_proxy is defined
+  become: true
+  become_user: root
   tags: config
 
 - name: update package cache
   apt:
     update_cache: yes
+  become: true
+  become_user: root
   tags:
     - install
     - upgrade
@@ -83,13 +99,19 @@
     name: "{{ item.name }}"
     state: "{{ item.state | default(package_state) }}"
     install_recommends: false
-  with_items: packages
+  with_items: "{{ packages }}"
+  become: true
+  become_user: root
   tags: install
 
-- name: "upgrade packages"
+- name: upgrade packages
   apt:
     upgrade: "{{ package_upgrade }}"
-  tags: upgrade
+  become: true
+  become_user: root
+  tags:
+    - install
+    - upgrade
 
 - name: configure users
   user:
@@ -100,7 +122,9 @@
     group: "{{ item.group | default(omit) }}"
     groups: "{{ item.groups | default(omit) }}"
     state: "{{ item.state | default(omit) }}"
-  with_items: users
+  with_items: "{{ users }}"
+  become: true
+  become_user: root
   tags:
     - user
 
@@ -108,7 +132,9 @@
   kernel_blacklist:
     name: "{{ item.name }}"
     state: "{{ item.state | default('present') }}"
-  with_items: blacklist_modules
+  with_items: "{{ blacklist_modules }}"
+  become: true
+  become_user: root
   tags: config
 
 - name: load kernel modules
@@ -116,7 +142,9 @@
     name: "{{ item.name }}"
     state: "{{ item.state | default('present') }}"
     params: "{{ item.params | default('') }}"
-  with_items: modules
+  with_items: "{{ modules }}"
+  become: true
+  become_user: root
   tags: config
 
 - name: configure sysctl entries
@@ -124,8 +152,10 @@
     name: "{{ item.name }}"
     value: "{{ item.value }}"
     state: "{{ item.state | default('present') }}"
-    sysctl_file: "{{ item.file | default(true) }}"
-  with_items: sysctls
+    sysctl_file: "{{ item.file | default(omit) }}"
+  with_items: "{{ sysctls }}"
+  become: true
+  become_user: root
   tags: config
 
 - name: configure services
@@ -133,7 +163,9 @@
     name: "{{ item.name }}"
     state: "{{ item.state | default(omit) }}"
     enabled: "{{ item.enabled | default(true) }}"
-  with_items: services
+  with_items: "{{ services }}"
+  become: true
+  become_user: root
   tags: config
 
 - name: configure UFW policies
