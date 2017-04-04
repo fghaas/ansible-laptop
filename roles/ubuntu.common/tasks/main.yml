@@ -167,25 +167,3 @@
   become: true
   become_user: root
   tags: config
-
-- name: configure UFW policies
-  ufw:
-    direction: "{{ item.direction }}"
-    policy: "{{ item.policy }}"
-    state: "{{ item.state | default('enabled') }}"
-  with_items: ufw_policies
-  tags: config
-
-- name: configure UFW rules
-  ufw:
-    name: "{{ item.name | default(omit) }}"
-    direction: "{{ item.direction | default(omit) }}"
-    from_ip: "{{ item.from_ip | default(omit) }}"
-    from_port: "{{ item.from_port | default(omit) }}"
-    to_ip: "{{ item.to_ip | default(omit) }}"
-    to_port: "{{ item.to_port | default(omit) }}"
-    proto: "{{ item.proto | default(omit) }}"
-    rule: "{{ item.rule | default(omit) }}"
-    state: "{{ item.state | default('enabled') }}"
-  with_items: ufw_rules
-  tags: config

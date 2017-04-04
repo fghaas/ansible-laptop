@@ -1,0 +1,7 @@
+{% for srv in item.services %}
+[{{ srv.name }}]
+title={{ srv.title }}
+description={{ srv.description }} 
+ports={{ srv.ports }}
+
+{% endfor %}

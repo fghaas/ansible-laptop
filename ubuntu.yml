@@ -18,7 +18,7 @@
     - role: ubuntu.nodejs
       tags: nodejs
 
-- hosts: "&ubuntu:python"
+- hosts: "&ubuntu:ufw"
   roles:
-    - role: ubuntu.python
-      tags: python
+    - role: ubuntu.ufw
+      tags: ufw

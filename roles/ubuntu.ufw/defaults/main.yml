@@ -1,0 +1,9 @@
+---
+ufw_applications: []
+ufw_rules: []
+ufw_policies:
+  - direction: incoming
+    policy: deny
+  - direction: outgoing
+    policy: allow
+
