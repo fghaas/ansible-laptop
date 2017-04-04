@@ -1,7 +1,7 @@
 - hosts: ubuntu
-  sudo: yes
   roles:
-    - ubuntu.common
+    - role: ubuntu.common
+      tags: common
 
 - hosts: "&ubuntu:lxc"
   roles:
