@@ -8,6 +8,7 @@ blacklist_modules: []
 services: []
 volume_groups: []
 filesystems: []
+files: []
 users: []
 package_upgrade: safe
 sysctls: []

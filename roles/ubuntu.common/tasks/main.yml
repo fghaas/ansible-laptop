@@ -63,8 +63,24 @@
     - install
     - config
 
- 
-- name: configure repository keys
+- name: create/remove files, links, and directories
+  file:
+    state: "{{ item.state | default(omit) }}"
+    owner: "{{ item.owner | default(omit) }}"
+    group: "{{ item.group | default(omit) }}"
+    mode: "{{ item.mode | default(omit) }}"
+    name: "{{ item.name | default(omit) }}"
+    path: "{{ item.path | default(omit) }}"
+    dest: "{{ item.dest | default(omit) }}"
+    src: "{{ item.src | default(omit) }}"
+  with_items: "{{ files }}"
+  become: true
+  become_user: root
+  tags:
+    - install
+    - config
+
+- name: fetch repository keys from keyservers
   apt_key:
     id: "{{ item.id }}"
     state: "{{ item.state | default('present') }}"
