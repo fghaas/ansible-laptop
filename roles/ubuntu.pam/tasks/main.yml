@@ -1,0 +1,28 @@
+---
+- name: install/remove packages required by PAM
+  apt:
+    name: "{{ item.package }}"
+    state: "{{ item.state | default('present') }}"
+  with_items: "{{ pam_modules }}"
+  when: item.package is defined
+  become: true
+  become_user: root
+  tags:
+    - install
+
+- name: enable google_authenticator PAM module
+  lineinfile:
+    dest: '/etc/pam.d/{{ item.1.name }}'
+    line: "auth	required 	pam_google_authenticator.so nullok"
+    insertafter: '^session'
+    state: "{{ item.0.state | default('present') }}"
+  with_subelements:
+    - '{{ pam_modules }}'
+    - services
+  when:
+    item.0.name == 'google_authenticator'
+  become: true
+  become_user: root
+  tags:
+    - config
+    - security
