@@ -3,6 +3,8 @@
   tasks:
     - group_by: key={{ ansible_distribution|lower }}
       changed_when: false
+    - group_by: key={{ ansible_os_family|lower }}
+      changed_when: false
   tags:
     - always
 
