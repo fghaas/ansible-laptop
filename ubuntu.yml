@@ -5,6 +5,11 @@
     - role: ubuntu.pam
       tags: pam
 
+- hosts: "&ubuntu:python"
+  roles:
+    - role: ubuntu.python
+      tags: python
+
 - hosts: "&ubuntu:lxc"
   roles:
     - role: ubuntu.lxc
