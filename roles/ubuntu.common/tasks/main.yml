@@ -130,6 +130,16 @@
     - config
     - upgrade
 
+- name: set dpkg architectures
+  shell: dpkg --add-architecture {{ item }}
+  with_items: "{{ package_architectures }}"
+  become: true
+  become_user: root
+  tags:
+    - install
+    - config
+    - upgrade
+
 - name: update package cache
   apt:
     update_cache: yes
