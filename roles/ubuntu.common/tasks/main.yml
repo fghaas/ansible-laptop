@@ -113,7 +113,9 @@
   when: apt_proxy is defined
   become: true
   become_user: root
-  tags: config
+  tags:
+    - config
+    - install
 
 - name: configure repositories
   apt_repository:
