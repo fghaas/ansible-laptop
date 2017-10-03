@@ -9,3 +9,5 @@
     - always
 
 - include: ubuntu.yml
+
+- include: opensuse.yml
