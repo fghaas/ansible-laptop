@@ -11,6 +11,7 @@ filesystems: []
 files: []
 users: []
 package_upgrade: safe
+package_architectures: []
 sysctls: []
 ufw_policies: []
 ufw_rules: []
