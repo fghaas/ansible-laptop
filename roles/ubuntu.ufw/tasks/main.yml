@@ -5,6 +5,8 @@
     dest: "/etc/ufw/applications.d/{{ item.name }}"
     state: "{{ item.state | default(omit) }}"
   with_items: "{{ ufw_applications }}"
+  become: true
+  become_user: root
   tags:
     - config
 
@@ -21,6 +23,8 @@
     interface: "{{ item.interface | default(omit) }}"
     state: "{{ item.state | default('enabled') }}"
   with_items: "{{ ufw_rules }}"
+  become: true
+  become_user: root
   tags:
     - config
 
@@ -30,5 +34,6 @@
     policy: "{{ item.policy }}"
     state: "{{ item.state | default('enabled') }}"
   with_items: "{{ ufw_policies }}"
+  become: true
+  become_user: root
   tags: config
-
