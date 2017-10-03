@@ -157,7 +157,8 @@
   with_items: "{{ packages }}"
   become: true
   become_user: root
-  tags: install
+  tags:
+    - install
 
 - name: upgrade packages
   apt:
