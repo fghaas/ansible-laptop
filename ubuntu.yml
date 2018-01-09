@@ -1,6 +1,6 @@
 - hosts: ubuntu
   roles:
-    - role: ubuntu.common
+    - role: ubuntu
       tags: common
     - role: ubuntu.pam
       tags: pam
