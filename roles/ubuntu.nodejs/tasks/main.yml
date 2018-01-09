@@ -1,10 +1,10 @@
 ---
-- name: install node.js packages
+- name: "install node.js packages"
   npm:
     name: "{{ item.name }}"
-    state: "{{ item.state | default(package_state) }}"
+    state: "{{ item.state | default('present') }}"
     global: "{{ item.global | default(true) }}"
-  with_items: npm_packages
+  with_items: "{{ npm_packages }}"
   become: true
   become_user: root
   tags: install
