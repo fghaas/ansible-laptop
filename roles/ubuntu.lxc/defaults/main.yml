@@ -1,2 +1,5 @@
 ---
+lxc_usernet_quota: 100
+lxc_subuid_range: "100000:65536"
+lxc_subgid_range: "100000:65536"
 lxc_containers: []

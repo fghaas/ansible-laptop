@@ -12,7 +12,40 @@
       - libpam-cgfs
     tags: install
 
-  - name: create LXC containers from templates 
+  - name: get real username
+    become: false
+    set_fact:
+      _real_username: "{{ ansible_user }}"
+    tags: always
+
+  - name: enable subuid mapping for unprivileged containers
+    become: true
+    become_user: root
+    lineinfile:
+      path: "/etc/subuid"
+      line: "{{ _real_username}}:{{ lxc_subuid_range }}"
+      regexp: "^{{ _real_username}}"
+    tags: config
+
+  - name: enable subgid mapping for unprivileged containers
+    become: true
+    become_user: root
+    lineinfile:
+      path: "/etc/subgid"
+      line: "{{ _real_username}}:{{ lxc_subgid_range }}"
+      regexp: "^{{ _real_username}}"
+    tags: config
+
+  - name: enable LXC usernet quota
+    become: true
+    become_user: root
+    lineinfile:
+      path: "/etc/lxc/lxc-usernet"
+      line: "{{ _real_username}} veth lxcbr0 {{ lxc_usernet_quota }}"
+      regexp: "^{{ _real_username}}"
+    tags: config
+
+  - name: create LXC containers from templates
     lxc_container:
       name: "{{ item.name }}"
       container_config: "{{ item.container_config | default(omit) }}"
