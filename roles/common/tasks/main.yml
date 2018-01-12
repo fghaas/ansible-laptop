@@ -88,6 +88,7 @@
     comment: "{{ item.comment | default(omit) }}"
     group: "{{ item.group | default(omit) }}"
     groups: "{{ item.groups | default(omit) }}"
+    home: "{{ item.home | default(omit) }}"
     state: "{{ item.state | default(omit) }}"
   with_items: "{{ users }}"
   become: true
