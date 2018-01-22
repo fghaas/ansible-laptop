@@ -64,7 +64,6 @@
   - name: create LXC containers from clones
     lxc_container:
       name: "{{ item.clone_source }}"
-      container_config: "{{ item.container_config | default(omit) }}"
       clone_name: "{{ item.name }}"
       backing_store: "{{ item.backing_store | default(omit) }}"
       clone_snapshot: "{{ item.clone_snapshot | default(omit) }}"
