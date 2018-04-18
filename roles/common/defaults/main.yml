@@ -1,7 +1,7 @@
 packages: []
 repositories: []
 repository_keys: []
-keyserver: 'pgp.mit.edu'
+keyserver: 'keys.ubuntu.com'
 package_state: 'present'
 modules: []
 blacklist_modules: []
