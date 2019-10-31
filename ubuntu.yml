@@ -29,3 +29,8 @@
   roles:
     - role: ubuntu.ufw
       tags: ufw
+
+- hosts: "&ubuntu:emacs"
+  roles:
+    - role: ubuntu.emacs
+      tags: emacs

@@ -1,0 +1,26 @@
+---
+- name: install emacs package
+  apt:
+    name: '{{ emacs_package_name }}'
+    state: installed
+  become: true
+  become_user: root
+  tags:
+    - install
+
+- name: install emacs mode packages
+  apt:
+    name: '{{ emacs_mode_packages }}'
+    state: installed
+  become: true
+  become_user: root
+  tags:
+    - install
+
+- name: install .emacs file
+  copy:
+    src: "{{ emacs_dotemacs }}"
+    dest: "~/.emacs"
+  tags:
+    - config
+  when: 'emacs_dotemacs | default("") != ""'
