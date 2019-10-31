@@ -1,1 +1,6 @@
-pip_packages: []
+---
+python_packages:
+  - python3-pip
+  - python3-virtualenv
+  - virtualenvwrapper
+python_pip_packages: []

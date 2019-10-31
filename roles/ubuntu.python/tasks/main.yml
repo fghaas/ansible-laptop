@@ -1,12 +1,7 @@
 ---
 - name: install packages
   apt:
-    name: "{{ item }}"
-  with_items:
-    - python-pip
-    - python3-pip
-    - virtualenv
-    - virtualenvwrapper
+    name: "{{ python_packages }}"
   become: true
   become_user: root
   tags: install
@@ -17,7 +12,8 @@
     version: "{{ item.version|default(omit) }}"
     state: "{{ item.state | default(omit) }}"
     virtualenv: "~/.virtualenvs/{{ item.virtualenv }}"
-  with_items: "{{ pip_packages }}"
+    virtualenv_python: "{{ item.virtualenv_python|default(omit) }}"
+  with_items: "{{ python_pip_packages }}"
   become: false
   when: item.virtualenv is defined
   tags: install
@@ -28,7 +24,7 @@
     version: "{{ item.version|default(omit) }}"
     state: "{{ item.state | default(omit) }}"
     executable: "{{ item.executable|default(omit) }}"
-  with_items: "{{ pip_packages }}"
+  with_items: "{{ python_pip_packages }}"
   become: true
   become_user: root
   when: item.virtualenv is not defined
