@@ -1,0 +1,10 @@
+---
+- name: install font packages
+  apt:
+    name: 'fonts-{{ item }}'
+    state: installed
+  with_items: '{{ fonts }}'
+  become: true
+  become_user: root
+  tags:
+    - install

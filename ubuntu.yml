@@ -35,6 +35,11 @@
     - role: ubuntu.emacs
       tags: emacs
 
+- hosts: "&ubuntu:fonts"
+  roles:
+    - role: ubuntu.fonts
+      tags: fonts
+
 - hosts: "&ubuntu:git"
   roles:
     - role: ubuntu.git
