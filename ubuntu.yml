@@ -35,6 +35,11 @@
     - role: ubuntu.emacs
       tags: emacs
 
+- hosts: "&ubuntu:git"
+  roles:
+    - role: ubuntu.git
+      tags: git
+
 - hosts: "&ubuntu:yubikey"
   roles:
     - role: ubuntu.yubikey
