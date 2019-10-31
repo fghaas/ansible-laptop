@@ -11,3 +11,5 @@
 - include: ubuntu.yml
 
 - include: opensuse.yml
+
+- include: debian.yml
