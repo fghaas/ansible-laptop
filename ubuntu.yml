@@ -34,3 +34,8 @@
   roles:
     - role: ubuntu.emacs
       tags: emacs
+
+- hosts: "&ubuntu:yubikey"
+  roles:
+    - role: ubuntu.yubikey
+      tags: yubikey

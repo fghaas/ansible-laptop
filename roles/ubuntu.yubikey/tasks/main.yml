@@ -1,0 +1,39 @@
+---
+- name: install Yubikey management packages
+  apt:
+    name: '{{ yubikey_packages }}'
+    state: installed
+  become: true
+  become_user: root
+  tags:
+    - install
+
+- name: "install Yubikey PKCS#11 package"
+  apt:
+    name: ykcs11
+    state: installed
+  become: true
+  become_user: root
+  tags:
+    - install
+
+- name: "discover full path to Yubikey PKCS#11 library"
+  shell: "dpkg -L ykcs11 | grep 'libykcs11.so$'"
+  register: yubikey_pkcs11
+  tags:
+    - config
+
+- name: install "yubissh" bash alias
+  blockinfile:
+    path: "~/.bash_aliases"
+    content: |
+      function yubissh() {
+        so="{{ yubikey_pkcs11.stdout }}"
+        ssh-add -e $so
+        if ! [ "$1" = 'off' ]; then
+          ssh-add -s $so
+        fi
+      }
+    create: yes
+  tags:
+    - config
