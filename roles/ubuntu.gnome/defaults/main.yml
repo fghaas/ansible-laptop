@@ -1,0 +1,11 @@
+---
+gnome_packages:
+  - ubuntu-gnome-desktop
+  - gnome-tweak-tool
+gnome_enable_animations: true
+gnome_compose_key: ''
+gnome_fonts: {}
+gnome_natural_scroll:
+  mouse: false
+  touchpad: true
+gnome_touchscreen_orientation_lock: false

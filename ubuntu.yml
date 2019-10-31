@@ -45,6 +45,11 @@
     - role: ubuntu.git
       tags: git
 
+- hosts: "&ubuntu:gnome"
+  roles:
+    - role: ubuntu.gnome
+      tags: gnome
+
 - hosts: "&ubuntu:yubikey"
   roles:
     - role: ubuntu.yubikey

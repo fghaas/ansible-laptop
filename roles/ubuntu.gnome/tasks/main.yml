@@ -1,0 +1,67 @@
+---
+- name: install Ubuntu GNOME desktop
+  apt:
+    name: '{{ gnome_packages }}'
+    state: installed
+  become: true
+  become_user: root
+  tags:
+    - install
+
+- name: install psutil module package (Python 2)
+  apt:
+    name: 'python-psutil'
+    state: installed
+  when: "not (ansible_python_interpreter|default('') is search('python3'))" 
+  become: true
+  become_user: root
+  tags:
+    - install
+    
+- name: install psutil module package (Python 3)
+  apt:
+    name: 'python3-psutil'
+    state: installed
+  when: "ansible_python_interpreter|default('') is search('python3')" 
+  become: true
+  become_user: root
+  tags:
+    - install
+    
+- name: enable/disable GNOME animations
+  dconf:
+    key: '/org/gnome/desktop/interface/enable-animations'
+    value: "{{ gnome_enable_animations | bool | lower }}"
+  tags:
+    - config
+
+- name: set GNOME compose key
+  dconf:
+    key: '/org/gnome/desktop/input-sources/xkb-options'
+    value: "[ 'compose:{{ gnome_compose_key }}']"
+  when: "gnome_compose_key | default('') != ''"
+  tags:
+    - config
+
+- name: set GNOME fonts
+  dconf:
+    key: '/org/gnome/desktop/interface/{{ item.key }}-font-name'
+    value: '"{{ item.value }}"'
+  with_dict: "{{ gnome_fonts }}"
+  tags:
+    - config
+
+- name: enable/disable natural scrolling in GNOME
+  dconf:
+    key: '/org/gnome/desktop/peripherals/{{ item.key }}/natural-scroll'
+    value: '{{ item.value | bool | lower }}'
+  with_dict: "{{ gnome_natural_scroll }}"
+  tags:
+    - config
+
+- name: lock/unlock touchscreen orientation in GNOME
+  dconf:
+    key: '/org/gnome/settings-daemon/peripherals/touchscreen/orientation-lock'
+    value: "{{ gnome_touchscreen_orientation_lock | bool | lower }}"
+  tags:
+    - config
