@@ -8,21 +8,10 @@
   tags:
     - install
 
-- name: install psutil module package (Python 2)
+- name: install psutil module package
   apt:
-    name: 'python-psutil'
+    name: '{{ _python_package_prefix }}-psutil'
     state: installed
-  when: "not (ansible_python_interpreter|default('') is search('python3'))" 
-  become: true
-  become_user: root
-  tags:
-    - install
-    
-- name: install psutil module package (Python 3)
-  apt:
-    name: 'python3-psutil'
-    state: installed
-  when: "ansible_python_interpreter|default('') is search('python3')" 
   become: true
   become_user: root
   tags:

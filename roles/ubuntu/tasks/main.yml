@@ -1,4 +1,10 @@
 ---
+- name: determine Python package prefix
+  set_fact:
+    '_python_package_prefix': "{{ (ansible_python_interpreter|default('') is search('python3')) | ternary('python3', 'python') }}" 
+  tags:
+    - always
+
 - name: fetch repository keys from keyservers
   apt_key:
     id: "{{ item.id }}"
@@ -36,6 +42,15 @@
     - config
     - install
 
+- name: install apt module package
+  apt:
+    name: '{{ _python_package_prefix }}-apt'
+    state: present
+  become: true
+  become_user: root
+  tags:
+    - install
+    
 - name: configure repositories
   apt_repository:
     repo: "{{ item.repo }}"
