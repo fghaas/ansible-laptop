@@ -1,4 +1,4 @@
-- hosts: debian
+- hosts: debian:!ubuntu
   roles:
     - role: debian
       tags: common
