@@ -1,0 +1,4 @@
+---
+openvpn_packages:
+  - openvpn
+  - network-manager-openvpn-gnome
